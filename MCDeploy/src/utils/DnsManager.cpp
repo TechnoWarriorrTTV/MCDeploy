@@ -32,6 +32,8 @@ DnsManager::DnsManager() {
                 m_apiToken = dns.value("cloudflare_api_token", "");
                 m_zoneId = dns.value("cloudflare_zone_id", "");
                 m_domain = dns.value("cloudflare_domain", "");
+                m_proxyUrl = dns.value("dns_proxy_url", "");
+                m_proxySecret = dns.value("dns_proxy_secret", "");
             }
         } catch (...) {}
         configFile.close();
@@ -50,6 +52,14 @@ DnsManager::DnsManager() {
         const char* envVal = std::getenv("CLOUDFLARE_DOMAIN");
         if (envVal) m_domain = envVal;
     }
+    if (m_proxyUrl.empty()) {
+        const char* envVal = std::getenv("DNS_PROXY_URL");
+        if (envVal) m_proxyUrl = envVal;
+    }
+    if (m_proxySecret.empty()) {
+        const char* envVal = std::getenv("DNS_PROXY_SECRET");
+        if (envVal) m_proxySecret = envVal;
+    }
 
     // 3. Fallback to compile-time obfuscated credentials (now empty placeholders)
     if (m_apiToken.empty()) {
@@ -62,12 +72,22 @@ DnsManager::DnsManager() {
         m_domain = DnsCredentials::getDomain();
     }
 
-    m_enabled = !m_apiToken.empty() && !m_zoneId.empty() && !m_domain.empty();
+    // Default domain if not specified anywhere
+    if (m_domain.empty()) {
+        m_domain = "mcdeploy.online";
+    }
+
+    m_enabled = (!m_apiToken.empty() && !m_zoneId.empty() && !m_domain.empty()) ||
+                (!m_proxyUrl.empty() && !m_domain.empty());
     
     if (m_enabled) {
-        std::cout << "[MCDeploy DNS] Cloudflare DNS integration initialized for domain: " << m_domain << std::endl;
+        if (!m_apiToken.empty()) {
+            std::cout << "[MCDeploy DNS] Cloudflare DNS integration initialized for domain: " << m_domain << " (Direct Mode)" << std::endl;
+        } else {
+            std::cout << "[MCDeploy DNS] Cloudflare DNS integration initialized for domain: " << m_domain << " (Proxy Mode: " << m_proxyUrl << ")" << std::endl;
+        }
     } else {
-        std::cerr << "[MCDeploy DNS] Warning: DNS credentials not available. Subdomain features disabled." << std::endl;
+        std::cerr << "[MCDeploy DNS] Warning: DNS credentials or proxy not available. Subdomain features disabled." << std::endl;
     }
 }
 
@@ -108,12 +128,33 @@ std::string DnsManager::cloudflareApiRequest(const std::string& method,
     CURL* curl = curl_easy_init();
     if (!curl) return "";
 
-    std::string url = "https://api.cloudflare.com/client/v4" + endpoint;
+    // If m_zoneId is empty, construct endpoint with "default" placeholder
+    std::string finalEndpoint = endpoint;
+    if (finalEndpoint.rfind("/zones//", 0) == 0) {
+        finalEndpoint.replace(0, 8, "/zones/default/");
+    }
+
+    std::string url;
+    struct curl_slist* headers = nullptr;
     std::string response;
 
-    struct curl_slist* headers = nullptr;
-    headers = curl_slist_append(headers, ("Authorization: Bearer " + m_apiToken).c_str());
-    headers = curl_slist_append(headers, "Content-Type: application/json");
+    if (!m_apiToken.empty()) {
+        // Direct Mode: Call Cloudflare directly
+        url = "https://api.cloudflare.com/client/v4" + finalEndpoint;
+        headers = curl_slist_append(headers, ("Authorization: Bearer " + m_apiToken).c_str());
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+    } else if (!m_proxyUrl.empty()) {
+        // Proxy Mode: Call Netlify proxy API
+        url = m_proxyUrl + "/api/dns/proxy";
+        headers = curl_slist_append(headers, ("x-mcdeploy-dns-endpoint: " + finalEndpoint).c_str());
+        if (!m_proxySecret.empty()) {
+            headers = curl_slist_append(headers, ("x-mcdeploy-dns-secret: " + m_proxySecret).c_str());
+        }
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+    } else {
+        curl_easy_cleanup(curl);
+        return "";
+    }
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);

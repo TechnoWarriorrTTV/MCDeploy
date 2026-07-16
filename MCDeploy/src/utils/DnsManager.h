@@ -103,6 +103,8 @@ private:
     std::string m_apiToken;
     std::string m_zoneId;
     std::string m_domain;
+    std::string m_proxyUrl;
+    std::string m_proxySecret;
     bool m_enabled = false;
     std::string m_cachedPublicIp;
     std::mutex m_mutex;

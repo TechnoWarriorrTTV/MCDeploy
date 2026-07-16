@@ -23,7 +23,9 @@
     "dns": {
       "cloudflare_api_token": "",
       "cloudflare_zone_id": "",
-      "cloudflare_domain": "mcdeploy.online"
+      "cloudflare_domain": "mcdeploy.online",
+      "dns_proxy_url": "https://mcdeploy.online",
+      "dns_proxy_secret": ""
     },
     "oauth": {
       "google": {
