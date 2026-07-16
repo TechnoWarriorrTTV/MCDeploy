@@ -4,13 +4,14 @@ The repository-side Netlify account backend is implemented. Complete only the st
 
 ## 1. Put this workspace in a private Git repository
 
-This workspace is not currently a Git repository. Create a **private** GitHub/GitLab repository, then run from the MCDeploy root:
+This workspace is a Git repository. To set it up on GitHub/GitLab:
 
 ```powershell
 git init
 git branch -M main
-git add .gitignore WEBSITE NETLIFY_BACKEND_MIGRATION.md
-git commit -m "Add Netlify webpanel backend"
+# Note: .gitignore and WEBSITE/ are ignored locally so they won't be pushed.
+git add . 
+git commit -m "Add MCDeploy source and configs"
 git remote add origin <YOUR_PRIVATE_REPOSITORY_URL>
 git push -u origin main
 ```
@@ -33,7 +34,21 @@ Create a Netlify Database for the site. Apply `WEBSITE/migrations/0001_initial.s
 
 ## 4. Add server-only environment variables
 
-In Netlify **Site configuration → Environment variables**, add these for Functions: `RESEND_API_KEY`, `RESEND_FROM` (`MCDeploy <info@mcdeploy.online>`), `SESSION_PEPPER`, `VERIFICATION_PEPPER`, `RATE_LIMIT_PEPPER`, `AGENT_ENROLLMENT_SECRET`, and `PUBLIC_SITE_URL` (`https://mcdeploy.online`). Generate each pepper/secret independently:
+In Netlify **Site configuration → Environment variables**, add these variables for Functions:
+
+### General & Authentication
+- `RESEND_API_KEY` (Resend Email API Key)
+- `RESEND_FROM` (e.g., `MCDeploy <info@mcdeploy.online>`)
+- `SESSION_PEPPER`, `VERIFICATION_PEPPER`, `RATE_LIMIT_PEPPER`
+- `AGENT_ENROLLMENT_SECRET`
+- `PUBLIC_SITE_URL` (`https://mcdeploy.online`)
+
+### Cloudflare DNS Proxy
+- `CLOUDFLARE_API_TOKEN` (API Token with Zone.DNS edit permissions for your domain)
+- `CLOUDFLARE_ZONE_ID` (The API Zone ID of your Cloudflare domain)
+- `DNS_PROXY_SECRET` (A random secret token used by C++ clients to authorize DNS registrations)
+
+Generate each pepper/secret/token independently:
 
 ```powershell
 $bytes = New-Object byte[] 48
