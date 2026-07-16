@@ -1,0 +1,20 @@
+{
+  "name": "mcdeploy",
+  "version": "1.0.0",
+  "dependencies": [
+    "drogon",
+    "sqlite3",
+    "curl",
+    "openssl",
+    "nlohmann-json",
+    "spdlog",
+    {
+      "name": "webview2",
+      "platform": "windows"
+    },
+    {
+      "name": "wil",
+      "platform": "windows"
+    }
+  ]
+}

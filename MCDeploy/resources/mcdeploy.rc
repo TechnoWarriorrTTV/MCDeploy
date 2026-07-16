@@ -1,0 +1,55 @@
+// ============================================================
+// MCDeploy Windows Resource File
+// Compiled into mcdeploy.exe by MSVC's rc.exe. Provides:
+//   - The .exe icon (shown in Explorer, taskbar, and window)
+//   - Version info shown in file Properties dialog
+//   - DPI-aware manifest so the window looks sharp on HiDPI displays
+// ============================================================
+
+#include <winver.h>
+
+// The app's icon — ID 1 is picked up by Windows as the "primary" icon.
+IDI_ICON_MAIN ICON "mcdeploy.ico"
+
+// Definitions
+#ifndef IDI_ICON_MAIN
+#define IDI_ICON_MAIN 1
+#endif
+
+1 ICON "mcdeploy.ico"
+
+// ============================================================
+// Version information (shown in Explorer → Properties → Details)
+// ============================================================
+VS_VERSION_INFO VERSIONINFO
+    FILEVERSION 1,0,0,0
+    PRODUCTVERSION 1,0,0,0
+    FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+    FILEFLAGS 0x1L
+#else
+    FILEFLAGS 0x0L
+#endif
+    FILEOS 0x40004L
+    FILETYPE 0x1L
+    FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName",      "MCDeploy"
+            VALUE "FileDescription",  "MCDeploy - Minecraft server control panel with AI copilot"
+            VALUE "FileVersion",      "1.0.0.0"
+            VALUE "InternalName",     "mcdeploy"
+            VALUE "LegalCopyright",   "MIT License"
+            VALUE "OriginalFilename", "mcdeploy.exe"
+            VALUE "ProductName",      "MCDeploy"
+            VALUE "ProductVersion",   "1.0.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

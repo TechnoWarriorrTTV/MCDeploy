@@ -1,0 +1,52 @@
+# Secrets - never commit real credentials
+config.json
+MCDeploy/config.json
+build/Release/config.json
+build/Debug/config.json
+*.env
+.env
+.env.*
+
+# Build output
+build/
+build-auth/
+x64/
+dist/
+out/
+installer/build-bin/
+installer/cache/
+installer/output/
+installer/stage/
+*.obj
+*.o
+*.exe
+*.dll
+*.pdb
+*.ilk
+!bore.exe
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+*.aps
+*.tlog
+*.idb
+*.pch
+*.ipch
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.cache/
+
+# Server data
+MCDeploy/uploads/
+MCDeploy/servers/
+backups/

@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --color-mcdeploy-bg: #0c0f0c;
+  --color-mcdeploy-card: #141814;
+  --color-mcdeploy-border: #242b24;
+  --color-mcdeploy-green: #1ebd56;
+  --color-mcdeploy-darkgreen: #147a38;
+  --color-mcdeploy-text: #e2e8f0;
+  --color-mcdeploy-muted: #8e9e8e;
+  --color-mcdeploy-accent: #5cff96;
+
+  --font-sans: 'Outfit', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+body {
+  background-color: #0c0f0c;
+  color: #e2e8f0;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0c0f0c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #242b24;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1ebd56;
+}
+
+/* Micro animations */
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 3s infinite ease-in-out;
+}
+
+.glow-hover:hover {
+  box-shadow: 0 0 15px rgba(30, 189, 86, 0.4);
+  border-color: #1ebd56;
+}
+
+
+/* Toast + confirm modal animations */
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-fade-in {
+  animation: fade-in 0.18s ease-out;
+}
