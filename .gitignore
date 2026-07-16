@@ -7,6 +7,9 @@ build/Debug/config.json
 .env
 .env.*
 
+# Website folder - do not push to GitHub
+WEBSITE/
+
 # Build output
 build/
 build-auth/
